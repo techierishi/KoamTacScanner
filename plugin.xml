@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin 
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.datasplice.cordova.plugin.koamtac"
+    version="1.0.0">
+
+    <name>KoamTacScanners</name>
+
+    <description>Plugins for the KoamTac suite of bluetooth scanners.</description>
+
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <asset src="www/koamtac.js" target="koamtac.js" />
+
+    <license>MIT</license>
+
+    <!-- android -->
+    <platform name="android">
+        <source-file src="src/android/KDC200Scanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac" />
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="KDC200Scanner">
+                <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KDC200Scanner" />
+            </feature>
+        </config-file>
+    </platform>
+
+</plugin>
