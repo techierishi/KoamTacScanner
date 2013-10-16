@@ -6,14 +6,14 @@
 
 #### enable
 
-	KDC200Scanner.prototype.enable = function (onScan, onError, [options]);
+	scanner.enable = function (onScan, onError, [options]);
 
 Starts the [BluetoothSocket](http://developer.android.com/reference/android/bluetooth/BluetoothSocket.html)
 that allows two-way communication between the plugin and the scanner. Options are currently unused.
 
 #### trigger
 
-	KDC200Scanner.prototype.trigger = function (onScan, onError);
+	scanner.trigger = function (onScan, onError);
 
 Triggers the scanner to perform a scan. `onScan` is called with the scan result.
 `onScan` may also called multiple times if the scan is triggered by the hardware 
@@ -21,7 +21,7 @@ button on the scanner.
 
 #### disable
 
-	KDC200Scanner.prototype.disable = function (onSuccess, onError);
+	scanner.disable = function (onSuccess, onError);
 
 Stops the [BluetoothSocket](http://developer.android.com/reference/android/bluetooth/BluetoothSocket.html)
 that allows two-way communication between the plugin and the scanner.
