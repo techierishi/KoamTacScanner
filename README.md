@@ -47,7 +47,7 @@ If the user elects to not switch bluetooth on through the dialog then a message 
 #### Scanner is not 'enabled'
 
 If bluetooth is switched on, and the KDC200 scanner is paired, but the scanner has not been enabled then
-a call to `trigger` will attempt to enable to scanner and open a 
+a call to `trigger` or `enable` will attempt to enable to scanner and open a 
 [BluetoothSocket](http://developer.android.com/reference/android/bluetooth/BluetoothSocket.html).
 
 If this attempt succeeds, then all subsequent scans will result in a call to `onScan` with the value from the scanner 
