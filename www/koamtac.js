@@ -27,6 +27,7 @@ cordova.define("cordova/plugin/koamtac/KDC200Scanner",
      * @param options Options to configure the plugin (optional - currently unused).
      */
     KDC200Scanner.prototype.enable = function (onScan, onError, options) {
+      options = options || {};
       exec(onScan, onError, 'koamtac/KDC200Scanner', 'enable', [options]);
     };
 
