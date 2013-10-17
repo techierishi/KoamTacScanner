@@ -1,6 +1,6 @@
 # Cordova Plugin for [KoamTac](http://www.koamtac.com) Scanners
 
-	var scanner = cordova.require('cordova/plugin/koamtac/KDC200Scanner');
+	var scanner = cordova.require('cordova/plugin/koamtac/KoamTacScanner');
 
 #### enable
 
