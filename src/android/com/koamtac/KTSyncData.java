@@ -5,7 +5,7 @@
  * Confidential and proprietary.
  */
 
-package com.koamtac.kdc200;
+package com.koamtac;
 
 /**
  *

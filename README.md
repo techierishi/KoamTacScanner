@@ -1,6 +1,4 @@
-# Cordova Plugin for KoamTac Scanners
-
-## [KDC200](http://www.koamtac.com/kdc200.html)
+# Cordova Plugin for [KoamTac](http://www.koamtac.com) Scanners
 
 	var scanner = cordova.require('cordova/plugin/koamtac/KDC200Scanner');
 
@@ -46,7 +44,7 @@ If the user elects to not switch bluetooth on through the dialog then a message 
 
 #### Scanner is not 'enabled'
 
-If bluetooth is switched on, and the KDC200 scanner is paired, but the scanner has not been enabled then
+If bluetooth is switched on, and the KoamTac scanner is paired, but the scanner has not been enabled then
 a call to `trigger` or `enable` will attempt to enable to scanner and open a 
 [BluetoothSocket](http://developer.android.com/reference/android/bluetooth/BluetoothSocket.html).
 

@@ -1,10 +1,10 @@
-cordova.define("cordova/plugin/koamtac/KDC200Scanner",
+cordova.define("cordova/plugin/KoamTacScanner",
 
   function (require, exports, module) {
 
     var exec = require("cordova/exec");
 
-    var KDC200Scanner = function () {
+    var KoamTacScanner = function () {
     };
 
     /**
@@ -13,8 +13,8 @@ cordova.define("cordova/plugin/koamtac/KDC200Scanner",
      * @param onScan Callback function. Called with the scan result when a scan event occurs.
      * @param onError Called if the scanner cannot scan (possible due to enable() not having been called).
      */
-    KDC200Scanner.prototype.trigger = function (onScan, onError) {
-      exec(onScan, onError, 'koamtac/KDC200Scanner', 'trigger', []);
+    KoamTacScanner.prototype.trigger = function (onScan, onError) {
+      exec(onScan, onError, 'KoamTacScanner', 'trigger', []);
     };
 
     /**
@@ -26,9 +26,9 @@ cordova.define("cordova/plugin/koamtac/KDC200Scanner",
      * @param onError Called if there is a problem enabling the scanner plugin.
      * @param options Options to configure the plugin (optional - currently unused).
      */
-    KDC200Scanner.prototype.enable = function (onScan, onError, options) {
+    KoamTacScanner.prototype.enable = function (onScan, onError, options) {
       options = options || {};
-      exec(onScan, onError, 'koamtac/KDC200Scanner', 'enable', [options]);
+      exec(onScan, onError, 'KoamTacScanner', 'enable', [options]);
     };
 
     /**
@@ -38,13 +38,11 @@ cordova.define("cordova/plugin/koamtac/KDC200Scanner",
      * @param onSuccess Called if the plugin is successfully disabled.
      * @param onError Called if there is a problem disabling the scanner plugin.
      */
-    KDC200Scanner.prototype.disable = function (onSuccess, onError) {
-      exec(onSuccess, onError, 'koamtac/KDC200Scanner', 'disable', []);
+    KoamTacScanner.prototype.disable = function (onSuccess, onError) {
+      exec(onSuccess, onError, 'KoamTacScanner', 'disable', []);
     };
 
-    // Define other KoamTac scanners here...
-
     // exports
-    var plugin = new KDC200Scanner();
+    var plugin = new KoamTacScanner();
     module.exports = plugin;
   });

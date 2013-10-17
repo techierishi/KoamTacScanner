@@ -5,7 +5,7 @@
     id="com.datasplice.cordova.plugin.koamtac"
     version="1.0.0">
 
-    <name>KoamTacScanners</name>
+    <name>KoamTacScanner</name>
 
     <description>Plugins for the KoamTac suite of bluetooth scanners.</description>
 
@@ -20,21 +20,21 @@
     <!-- android -->
     <platform name="android">
         <!-- DataSplice plugin file -->
-        <source-file src="src/android/com/datasplice/cordova/plugin/koamtac/KDC200Scanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac" />
+        <source-file src="src/android/com/datasplice/cordova/plugin/koamtac/KoamTacScanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac" />
 
         <!-- 
             KoamTac dependency files
             TODO: in the future these could be jarred and versioned. Kept with the plugin for simplicity for now.
         -->
         <source-file src="src/android/com/koamtac/AES.java" target-dir="src/com/koamtac" />
-        <source-file src="src/android/com/koamtac/kdc200/BluetoothChatService.java" target-dir="src/com/koamtac/kdc200" />
-        <source-file src="src/android/com/koamtac/kdc200/KScan.java" target-dir="src/com/koamtac/kdc200" />
-        <source-file src="src/android/com/koamtac/kdc200/KTSyncData.java" target-dir="src/com/koamtac/kdc200" />
+        <source-file src="src/android/com/koamtac/BluetoothChatService.java" target-dir="src/com/koamtac" />
+        <source-file src="src/android/com/koamtac/KScan.java" target-dir="src/com/koamtac" />
+        <source-file src="src/android/com/koamtac/KTSyncData.java" target-dir="src/com/koamtac" />
 
-        <!-- Add the KDC200Scanner feature -->
+        <!-- Add the KoamTacScanner feature -->
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="koamtac/KDC200Scanner">
-                <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KDC200Scanner" />
+            <feature name="KoamTacScanner">
+                <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KoamTacScanner" />
             </feature>
         </config-file>
 

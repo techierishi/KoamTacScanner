@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
-import com.koamtac.kdc200.BluetoothChatService;
-import com.koamtac.kdc200.KScan;
-import com.koamtac.kdc200.KTSyncData;
+import com.koamtac.BluetoothChatService;
+import com.koamtac.KScan;
+import com.koamtac.KTSyncData;
 import org.apache.cordova.*;
 
 import org.json.JSONArray;
@@ -22,15 +22,13 @@ import java.util.Set;
 
 
 /**
- * Cordova plugin for the <a href="koamtac.com/kdc200.html">KoamTac KDC200 Bluetooth Scanner</a>
- *
- *
+ * Cordova plugin for <a href="koamtac.com">KoamTac Bluetooth scanners</a>
  *
  * @see <a href="http://cordova.apache.org/docs/en/3.1.0/guide_platforms_android_plugin.md.html#Android%20Plugins">Android Plugins</a>
  */
-public class KDC200Scanner extends CordovaPlugin {
+public class KoamTacScanner extends CordovaPlugin {
 
-    private static final String TAG = KDC200Scanner.class.getCanonicalName();
+    private static final String TAG = KoamTacScanner.class.getCanonicalName();
 
     // Commands sent from the web app
     private static final String CMD_ENABLE = "enable";
@@ -38,7 +36,7 @@ public class KDC200Scanner extends CordovaPlugin {
     private static final String CMD_TRIGGER = "trigger";
 
     private static final int REQUEST_CODE_ENABLE_BT = 1775;
-    private static final String KDC_DEVICE_NAME_PREFIX = "KDC";
+    private static final String KOAMTAC_DEVICE_NAME_PREFIX = "KDC";
 
     private byte[] displayBuf = new byte[256];
     private String displayMessage;
@@ -178,13 +176,13 @@ public class KDC200Scanner extends CordovaPlugin {
      * TODO: extract interface or otherwise make this logic pluggable.
      *
      * This class simply finds the first bonded BT device with a
-     * name starting with KDC_DEVICE_NAME_PREFIX.
+     * name starting with KOAMTAC_DEVICE_NAME_PREFIX.
      */
     private class DefaultKoamTacDeviceSelector {
         public String deviceAddress() {
             Set<BluetoothDevice> bondedDevices = mBluetoothAdapter.getBondedDevices();
             for (BluetoothDevice device : bondedDevices) {
-                if (device.getName().startsWith(KDC_DEVICE_NAME_PREFIX)) {
+                if (device.getName().startsWith(KOAMTAC_DEVICE_NAME_PREFIX)) {
                     return device.getAddress();
                 }
             }

@@ -1,7 +1,7 @@
 package com.koamtac;
 
 import android.util.Log;
-import com.koamtac.kdc200.KTSyncData;
+import com.koamtac.KTSyncData;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;

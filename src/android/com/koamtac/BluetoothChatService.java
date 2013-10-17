@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.koamtac.kdc200;
+package com.koamtac;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

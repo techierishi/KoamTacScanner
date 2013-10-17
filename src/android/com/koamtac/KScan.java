@@ -5,7 +5,7 @@
  * Confidential and proprietary.
  */
 
-package com.koamtac.kdc200;
+package com.koamtac;
 
 import android.os.Environment;
 import android.app.ProgressDialog;
