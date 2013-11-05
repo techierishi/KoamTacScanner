@@ -16,6 +16,36 @@
     <asset src="www/koamtac.js" target="plugins/koamtac.js" />
 
     <license>MIT</license>
+    
+    <platform name="ios">
+        <!-- Cordova >= 2.8 -->
+        <config-file target="config.xml" parent="/*">
+            <feature name="KoamTacScanner">
+                <param name="ios-package" value="CDVKoamTacScanner" />
+            </feature>
+        </config-file>
+
+        <!-- DataSplice plugin files -->
+        <header-file src="src/ios/DataSplice/CDVKoamTacScanner.h" />
+        <source-file src="src/ios/DataSplice/CDVKoamTacScanner.m" />
+
+        <!-- 
+            KoamTac depedency files 
+            TODO: in the future these could be bundled and versioned. Kept with plugin for simplicity for now.
+        -->
+        <header-file src="src/ios/KoamTac/AES.h" />
+        <header-file src="src/ios/KoamTac/common.h" />
+        <header-file src="src/ios/KoamTac/FileHandle.h" />
+        <header-file src="src/ios/KoamTac/iKEA.h" />
+        <header-file src="src/ios/KoamTac/KScan.h" />
+        
+        <source-file src="src/ios/KoamTac/AES.c" />
+        <source-file src="src/ios/KoamTac/FileHandle.m" />
+        <source-file src="src/ios/KoamTac/KScan.m" />
+        <source-file src="src/ios/KoamTac/libiKEA.a" framework="true" />
+
+        <framework src="ExternalAccessory.framework" />
+    </platform>
 
     <!-- android -->
     <platform name="android">
