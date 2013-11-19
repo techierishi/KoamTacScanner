@@ -13,7 +13,7 @@
         <engine name="cordova" version=">=3.0.0" />
     </engines>
 
-    <asset src="www/koamtac.js" target="plugins/koamtac.js" />
+    <asset src="www/koamtac.js" target="koamtac.js" />
 
     <license>MIT</license>
     
