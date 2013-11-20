@@ -290,6 +290,9 @@ public class KoamTacScanner extends CordovaPlugin {
     private final Handler messageHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            if (KTSyncData.mChatService == null) {
+                return;
+            }
             switch (msg.what) {
                 case BluetoothChatService.MESSAGE_STATE_CHANGE:
                     Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
@@ -396,6 +399,14 @@ public class KoamTacScanner extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         Log.d(TAG, "onResume");
+        checkBluetoothAndConnectToRemoteDevice();
+    }
+
+    @Override
+    public void onPause(boolean multitasking) {
+        super.onPause(multitasking);
+        Log.d(TAG, "onPause");
+        teardownChat();
     }
 
     /**
@@ -406,7 +417,7 @@ public class KoamTacScanner extends CordovaPlugin {
     public void onReset() {
         super.onReset();
         Log.d(TAG, "onReset");
-        onDestroy();
+        teardownChat();
     }
 
     @Override
