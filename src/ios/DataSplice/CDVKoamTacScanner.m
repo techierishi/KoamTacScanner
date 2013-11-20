@@ -27,33 +27,32 @@
     [super pluginInitialize];
     
     // Attach local methods to application lifecycle events
-    SEL onWillTerminateSelector = sel_registerName("onWillTerminate:");
+    SEL onDidEnterBackgroundSelector = sel_registerName("onDidEnterBackground:");
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:onWillTerminateSelector
-                                                 name:UIApplicationWillTerminateNotification
-                                               object:nil];
-    
-    SEL onEnteredBackgroundSelector = sel_registerName("onEnteredBackground:");
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:onEnteredBackgroundSelector
+                                             selector:onDidEnterBackgroundSelector
                                                  name:UIApplicationDidEnterBackgroundNotification
                                                object:nil];
+    SEL onDidBecomeActiveSelector = sel_registerName("onDidBecomeActive:");
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:onDidBecomeActiveSelector
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
     
-	// Initialize and connect device
-	kscan = [[KScan alloc] init];
-	[kscan SetApplicationDelegate:self];
-	[kscan ConnectDevice];
+  // Initialize and connect device
+  kscan = [[KScan alloc] init];
+  [kscan SetApplicationDelegate:self];
+  [kscan ConnectDevice];
 }
 
 
 //-------------------------------------------------------------------
 // iOS Lifecycle Methods
 //-------------------------------------------------------------------
--(void)onEnteredBackground :(UIApplication *)application {
+-(void)onDidEnterBackground :(UIApplication *)application {
     [kscan DisconnectDevice];
 }
--(void)onWillTerminate :(UIApplication *)application {
-    [kscan DisconnectDevice];
+-(void)onDidBecomeActive :(UIApplication *)application {
+    [kscan ConnectDevice];
 }
 
 
@@ -111,8 +110,8 @@
 }
 
 - (void)dealloc {
-//	[kscan release];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+//  [kscan release];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 //    [super dealloc];
 }
 
