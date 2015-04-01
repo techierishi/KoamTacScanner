@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin 
+<plugin
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="com.datasplice.cordova.plugin.koamtac"
@@ -13,15 +13,15 @@
         <engine name="cordova" version=">=3.0.0" />
     </engines>
 
-    <!-- 
-        Adds js dependency at runtime. 
+    <!--
+        Adds js dependency at runtime.
         No need to use Cake to add js files to index.html
-        See: http://cordova.apache.org/docs/en/3.1.0/plugin_ref_spec.md.html#Plugin%20Specification 
+        See: http://cordova.apache.org/docs/en/3.1.0/plugin_ref_spec.md.html#Plugin%20Specification
     -->
     <js-module src="www/koamtac.js" name="KoamTacScanner" />
 
     <license>MIT</license>
-    
+
     <platform name="ios">
         <!-- Cordova >= 2.8 -->
         <config-file target="config.xml" parent="/*">
@@ -34,20 +34,14 @@
         <header-file src="src/ios/DataSplice/CDVKoamTacScanner.h" />
         <source-file src="src/ios/DataSplice/CDVKoamTacScanner.m" />
 
-        <!-- 
-            KoamTac depedency files 
+        <!--
+            KoamTac depedency files
             TODO: in the future these could be bundled and versioned. Kept with plugin for simplicity for now.
         -->
-        <header-file src="src/ios/KoamTac/AES.h" />
-        <header-file src="src/ios/KoamTac/common.h" />
-        <header-file src="src/ios/KoamTac/FileHandle.h" />
-        <header-file src="src/ios/KoamTac/iKEA.h" />
-        <header-file src="src/ios/KoamTac/KScan.h" />
+        <header-file src="src/ios/KoamTac/KDCConstants.h" />
+        <header-file src="src/ios/KoamTac/KDCReader.h" />
         
-        <source-file src="src/ios/KoamTac/AES.c" />
-        <source-file src="src/ios/KoamTac/FileHandle.m" />
-        <source-file src="src/ios/KoamTac/KScan.m" />
-        <source-file src="src/ios/KoamTac/libiKEA.a" framework="true" />
+        <source-file src="src/ios/KoamTac/libKDCReader.a" framework="true" />
 
         <framework src="ExternalAccessory.framework" />
     </platform>
@@ -57,7 +51,7 @@
         <!-- DataSplice plugin file -->
         <source-file src="src/android/com/datasplice/cordova/plugin/koamtac/KoamTacScanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac" />
 
-        <!-- 
+        <!--
             KoamTac dependency files
             TODO: in the future these could be jarred and versioned. Kept with the plugin for simplicity for now.
         -->
