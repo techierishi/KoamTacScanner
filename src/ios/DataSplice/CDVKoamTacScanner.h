@@ -7,19 +7,19 @@
 //
 
 #import <Cordova/CDV.h>
-#import "KScan.h"
+#import "KDCReader.h"
 
 @interface CDVKoamTacScanner : CDVPlugin
 
 {
-    KScan *kscan;
+    KDCReader *kdcReader;
 }
 
 - (void)enable:(CDVInvokedUrlCommand*)command;
 - (void)trigger:(CDVInvokedUrlCommand*)command;
 - (void)disable:(CDVInvokedUrlCommand*)command;
 
-@property (nonatomic, retain) KScan *kscan;
+@property (nonatomic, retain) KDCReader *kdcReader;
 @property (nonatomic, retain) NSString *callbackId;
 
 @end

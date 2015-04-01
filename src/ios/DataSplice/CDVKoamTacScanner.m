@@ -16,7 +16,7 @@
 @implementation CDVKoamTacScanner
 
 // @synthesize "generates" the getter/setter methods on the @property
-@synthesize kscan;
+@synthesize kdcReader;
 @synthesize callbackId;
 
 //-------------------------------------------------------------------
@@ -25,7 +25,7 @@
 //-------------------------------------------------------------------
 -(void)pluginInitialize {
     [super pluginInitialize];
-    
+
     // Attach local methods to application lifecycle events
     SEL onDidEnterBackgroundSelector = sel_registerName("onDidEnterBackground:");
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -37,11 +37,14 @@
                                              selector:onDidBecomeActiveSelector
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
-    
-  // Initialize and connect device
-  kscan = [[KScan alloc] init];
-  [kscan SetApplicationDelegate:self];
-  [kscan ConnectDevice];
+
+    // Initialize and connect device
+    kdcReader = [[KDCReader alloc] init];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kdcConnectionChanged:) name:kdcConnectionChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kdcBarcodeDataArrived:) name:kdcBarcodeDataArrivedNotification object:nil];
+
+    [kdcReader Connect];
 }
 
 
@@ -49,26 +52,46 @@
 // iOS Lifecycle Methods
 //-------------------------------------------------------------------
 -(void)onDidEnterBackground :(UIApplication *)application {
-    [kscan DisconnectDevice];
+    //[kdcReader Disconnect];
 }
 -(void)onDidBecomeActive :(UIApplication *)application {
-    [kscan ConnectDevice];
+    [kdcReader Connect];
 }
 
 
-//-------------------------------------------------------------------
-// KScan callback methods (implementation of KTSyncDelegate)
-//-------------------------------------------------------------------
-- (void)BarcodeDataArrived:(char *)BarcodeData;
+//************************************************************************
+//  Notification from KDCReader when connection has been changed
+//************************************************************************
+- (void)kdcConnectionChanged:(NSNotification *)notification
 {
-    // get the barcode into a plugin result
-    NSString* barcodeString = [NSString stringWithFormat:@"%s" , BarcodeData];
+    // todo - can we do anything useful here?
+    /*
+    KDCReader *kReader = (KDCReader *)[notification object];
+
+    if ( [kReader IsKDCConnected] ) {
+        // self.navigationItem.prompt = @"KDC is connected";
+    }
+    else {
+        // self.navigationItem.prompt = @"KDC is not connected";
+    }
+    */
+}
+
+//************************************************************************
+//  Notification from KDCReader when barcode data has been arrived from KDC
+//************************************************************************
+- (void)kdcBarcodeDataArrived:(NSNotification *)notification
+{
+    NSLog(@"%s",__FUNCTION__);
+
+    KDCReader *kReader = (KDCReader *)[notification object];
+    NSString* barcodeString = [kReader GetBarcodeData];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsString:barcodeString];
-    
+
     // ensure we keep the callback (to push subsequent barcodes to the app)
     [pluginResult setKeepCallbackAsBool:YES];
-    
+
     // send the result
     [self.commandDelegate sendPluginResult:pluginResult
                                 callbackId:self.callbackId];
@@ -91,17 +114,18 @@
  */
 - (void)trigger:(CDVInvokedUrlCommand*)command {
     self.callbackId = command.callbackId;
-    [kscan ScanBarcode]; // KScan will call BarcodeDataArrived
+    // [kscan ScanBarcode]; // KScan will call BarcodeDataArrived
+    [kdcReader SoftwareTrigger];
 }
 
 /**
  * Kills all bleutooth communication threads.
  */
 - (void)disable:(CDVInvokedUrlCommand*)command {
-    [kscan DisconnectDevice];
+    //[kdcReader Disconnect];
     self.callbackId = nil;
 //    [self.callbackId release];
-    
+
     // Send the result
     // No need to keep the callback on this one.
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
@@ -110,7 +134,6 @@
 }
 
 - (void)dealloc {
-//  [kscan release];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 //    [super dealloc];
 }
