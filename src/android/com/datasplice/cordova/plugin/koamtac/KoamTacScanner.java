@@ -205,8 +205,9 @@ public class KoamTacScanner extends CordovaPlugin {
      * @param scannerMessage
      */
     private void sendPluginResult(final PluginResult.Status status, final String scannerMessage, final boolean keepCallback) {
-        Log.d(TAG, "sendPluginResult(\"" + scannerMessage + "\")");
-        PluginResult pluginResult = new PluginResult(status, scannerMessage);
+        String trimmedScannerMessage = new String(scannerMessage).trim();
+        Log.d(TAG, "sendPluginResult(\"" + trimmedScannerMessage + "\")");
+        PluginResult pluginResult = new PluginResult(status, trimmedScannerMessage);
         pluginResult.setKeepCallback(keepCallback);
         callbackContext.sendPluginResult(pluginResult);
     }
