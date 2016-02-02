@@ -1,84 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <plugin
-    xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.datasplice.cordova.plugin.koamtac"
-    version="1.0.0">
+  id="com.datasplice.cordova.plugin.koamtac"
+  version="2.0.0"
+  xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <name>KoamTacScanner</name>
+  <name>KoamTacScanner</name>
+  <description>Plugins for the KoamTac suite of bluetooth scanners.</description>
+  <license>MIT</license>
 
-    <description>Plugins for the KoamTac suite of bluetooth scanners.</description>
+  <engines>
+      <engine name="cordova" version=">=3.0.0" />
+  </engines>
 
-    <engines>
-        <engine name="cordova" version=">=3.0.0" />
-    </engines>
+
+  <js-module src="www/KoamTacScanner.js" name="KoamTacScanner" >
+    <clobbers target="KoamTacScanner" />
+  </js-module>
+
+  <platform name="ios">
+    <!-- Cordova >= 2.8 -->
+    <config-file target="config.xml" parent="/*">
+      <feature name="KoamTacScanner">
+        <param name="ios-package" value="CDVKoamTacScanner" />
+      </feature>
+    </config-file>
+
+    <!-- DataSplice plugin files -->
+    <header-file src="src/ios/DataSplice/CDVKoamTacScanner.h" />
+    <source-file src="src/ios/DataSplice/CDVKoamTacScanner.m" />
 
     <!--
-        Adds js dependency at runtime.
-        No need to use Cake to add js files to index.html
-        See: http://cordova.apache.org/docs/en/3.1.0/plugin_ref_spec.md.html#Plugin%20Specification
+        KoamTac depedency files
+        TODO: in the future these could be bundled and versioned. Kept with plugin for simplicity for now.
     -->
-    <js-module src="www/koamtac.js" name="KoamTacScanner" />
+    <header-file src="src/ios/KoamTac/KDCConstants.h" />
+    <header-file src="src/ios/KoamTac/KDCReader.h" />
 
-    <license>MIT</license>
+    <source-file src="src/ios/KoamTac/libKDCReader.a" framework="true" />
 
-    <platform name="ios">
-        <!-- Cordova >= 2.8 -->
-        <config-file target="config.xml" parent="/*">
-            <feature name="KoamTacScanner">
-                <param name="ios-package" value="CDVKoamTacScanner" />
-            </feature>
-        </config-file>
+    <framework src="ExternalAccessory.framework" />
 
-        <!-- DataSplice plugin files -->
-        <header-file src="src/ios/DataSplice/CDVKoamTacScanner.h" />
-        <source-file src="src/ios/DataSplice/CDVKoamTacScanner.m" />
+    <!-- Add plist entries -->
+    <config-file target="*-Info.plist" parent="UISupportedExternalAccessoryProtocols">
+      <array>
+        <string>com.koamtac.kdc</string>
+      </array>
+    </config-file>
+  </platform>
 
-        <!--
-            KoamTac depedency files
-            TODO: in the future these could be bundled and versioned. Kept with plugin for simplicity for now.
-        -->
-        <header-file src="src/ios/KoamTac/KDCConstants.h" />
-        <header-file src="src/ios/KoamTac/KDCReader.h" />
-        
-        <source-file src="src/ios/KoamTac/libKDCReader.a" framework="true" />
-
-        <framework src="ExternalAccessory.framework" />
-        
-        <!-- Add plist entries -->
-        <config-file target="*-Info.plist" parent="UISupportedExternalAccessoryProtocols">
-            <array>
-                <string>com.koamtac.kdc</string>
-            </array>
-        </config-file>
-    </platform>
-
-    <!-- android -->
-    <platform name="android">
-        <!-- DataSplice plugin file -->
-        <source-file src="src/android/com/datasplice/cordova/plugin/koamtac/KoamTacScanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac" />
-
-        <!--
-            KoamTac dependency files
-            TODO: in the future these could be jarred and versioned. Kept with the plugin for simplicity for now.
-        -->
-        <source-file src="src/android/com/koamtac/AES.java" target-dir="src/com/koamtac" />
-        <source-file src="src/android/com/koamtac/BluetoothChatService.java" target-dir="src/com/koamtac" />
-        <source-file src="src/android/com/koamtac/KScan.java" target-dir="src/com/koamtac" />
-        <source-file src="src/android/com/koamtac/KTSyncData.java" target-dir="src/com/koamtac" />
-
-        <!-- Add the KoamTacScanner feature -->
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="KoamTacScanner">
-                <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KoamTacScanner" />
-            </feature>
-        </config-file>
-
-        <!-- Add the Android permissions -->
-        <config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.BLUETOOTH" />
-            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-        </config-file>
-    </platform>
+  <platform name="android">
+    <config-file parent="/*" target="res/xml/config.xml">
+      <feature name="KoamTacScanner">
+        <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KoamTacScanner" />
+      </feature>
+    </config-file>
+    <config-file parent="/*" target="AndroidManifest.xml">
+      <uses-permission android:name="android.permission.BLUETOOTH" />
+      <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    </config-file>
+    <source-file src="src/android/KoamTacScanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac/KoamTacScanner" />
+    <source-file src="src/android/libs/kdcreader.jar" target-dir="libs" />
+  </platform>
 
 </plugin>
