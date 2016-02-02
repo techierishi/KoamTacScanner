@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin
+  id="com.datasplice.cordova.plugin.koamtac"
+  version="2.0.0"
+  xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <name>KoamTacScanner</name>
+
+  <js-module src="www/KoamTacScanner.js" name="KoamTacScanner" >
+    <clobbers target="KoamTacScanner" />
+  </js-module>
+
+  <platform name="android">
+    <config-file parent="/*" target="res/xml/config.xml">
+      <feature name="KoamTacScanner">
+        <param name="android-package" value="com.datasplice.cordova.plugin.koamtac.KoamTacScanner" />
+      </feature>
+    </config-file>
+    <config-file parent="/*" target="AndroidManifest.xml">
+      <uses-permission android:name="android.permission.BLUETOOTH" />
+      <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    </config-file>
+    <source-file src="src/android/KoamTacScanner.java" target-dir="src/com/datasplice/cordova/plugin/koamtac/KoamTacScanner" />
+    <source-file src="src/android/libs/kdcreader.jar" target-dir="libs" />
+  </platform>
+
+</plugin>
