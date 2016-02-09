@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.lang.Override;
 
 import koamtac.kdc.sdk.*;
+import koamtac.kdc.sdk.KDCConstants;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -66,31 +67,44 @@ public class KoamTacScanner extends CordovaPlugin implements
     // Process and send Generic data events from KDC
     @Override
     public void DataReceived( KDCData pData ) {
-        sendScanData(pData.GetData());
+        String data = pData.GetData();
+        Log.d(TAG, "Sending Generic Data " + data);
+        sendScanData(data);
     }
 
     // Process and send Barcode data events from KDC
     @Override
     public void BarcodeDataReceived(KDCData pData) {
-        sendScanData(pData.GetData());
+        String data = pData.GetData();
+        Log.d(TAG, "Sending Barcode Data " + data);
+        sendScanData(data);
     }
 
     // Process and send GPS data events from KDC
     @Override
     public void GPSDataReceived(KDCData pData) {
-        sendScanData(pData.GetData());
+        String data = pData.GetData();
+        Log.d(TAG, "Sending GPS Data " + data);
+        sendScanData(data);
     }
 
     // Process and send Magnetic-Stripe-Reader data events from KDC
     @Override
     public void MSRDataReceived(KDCData pData) {
-        sendScanData(pData.GetData());
+        String data = pData.GetData();
+        Log.d(TAG, "Sending MSR Data " + data);
+        sendScanData(data);
     }
 
     // Process and send Near-Field-Communication data events from KDC
+    // Only get UID.  NFC Data can have many records, and is difficult to parse.
+    // see http://www.kdc100.com/documents/manuals/How_To_Use_Your_KDC_with_NFC_or_RFID.pdf
+    // maybe one day use Android NFC classes?
     @Override
     public void NFCDataReceived(KDCData pData) {
-        sendScanData(pData.GetData());
+        String uid = pData.GetNFCUID();
+        Log.d(TAG, "Sending NFC Data " + uid);
+        sendScanData(uid);
     }
 
     // Handle Connection States of KDC Devices
@@ -141,6 +155,8 @@ public class KoamTacScanner extends CordovaPlugin implements
     // Enable KDC
     private void enable() {
         checkAndConnect();
+        _kdcReader.SetNFCDataFormat(KDCConstants.NFCDataFormat.PACKET_FORMAT);
+        _kdcReader.EnableNFCUIDOnly(true);
     }
 
     // Check Bluetooth and Connect to existing device or first available device
@@ -165,13 +181,13 @@ public class KoamTacScanner extends CordovaPlugin implements
 
     // Disconnect KDC device from application
     private void disconnect() {
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "DISCONNECTED");
         if (_kdcReader != null) {
             _kdcReader.Disconnect();
             // clean up the kdcReader, we'll create new if necessary
             _kdcReader = null;
             _callbackContext.sendPluginResult(pluginResult);
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "DISCONNECTED");
     }
 
     @Override
