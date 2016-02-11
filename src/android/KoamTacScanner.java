@@ -155,8 +155,11 @@ public class KoamTacScanner extends CordovaPlugin implements
     // Enable KDC
     private void enable() {
         checkAndConnect();
-        _kdcReader.SetNFCDataFormat(KDCConstants.NFCDataFormat.PACKET_FORMAT);
-        _kdcReader.EnableNFCUIDOnly(true);
+        // put NFC scanner available, put into UID only mode.
+        if (_kdcReader.IsConnected() && _kdcReader.IsNFCSupported()) {
+          _kdcReader.SetNFCDataFormat(KDCConstants.NFCDataFormat.PACKET_FORMAT);
+          _kdcReader.EnableNFCUIDOnly(true);
+        }
     }
 
     // Check Bluetooth and Connect to existing device or first available device
@@ -181,7 +184,7 @@ public class KoamTacScanner extends CordovaPlugin implements
 
     // Disconnect KDC device from application
     private void disconnect() {
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "DISCONNECTED");
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, buildStatusMessage("DISCONNECTED"));
         if (_kdcReader != null) {
             _kdcReader.Disconnect();
             // clean up the kdcReader, we'll create new if necessary
