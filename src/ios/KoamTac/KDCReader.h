@@ -38,6 +38,8 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (BOOL) IsKeyPadSupported;
 - (BOOL) IsFlashSupported;
 - (BOOL) IsVibratorSupported;
+- (BOOL) IsPOSSupported;
+- (BOOL) IsBarcodeSupported;
 
 //KDC Mode
 - (BOOL) SetKDCMode:(enum KDCMode)mode;
@@ -144,8 +146,6 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (enum EnableDisable) IsCODE11Enabled;
 - (BOOL) EnableDisableCODE32:(enum EnableDisable)enabled;
 - (enum EnableDisable) IsCODE32Enabled;
-- (BOOL) EnableDisableGS1COMP:(enum EnableDisable)enabled;
-- (enum EnableDisable) IsGS1COMPEnabled;
 - (BOOL) EnableDisableMATRIX2OF5:(enum EnableDisable)enabled;
 - (enum EnableDisable) IsMATRIX2OF5Enabled;
 - (BOOL) EnableDisableMSI:(enum EnableDisable)enabled;
@@ -450,6 +450,9 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (BOOL)BeepSuccess;
 - (BOOL)BeepFailure;
 - (BOOL)MakeCustomBeep:(int)ontime :(int)offtime :(int)repeat;
+
+//Stored data
+- (void)GetStoredDataSingle;
 
 @end
 
