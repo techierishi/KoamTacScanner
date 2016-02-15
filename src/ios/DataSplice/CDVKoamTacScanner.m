@@ -52,7 +52,7 @@
 // iOS Lifecycle Methods
 //-------------------------------------------------------------------
 -(void)onDidEnterBackground :(UIApplication *)application {
-    //[kdcReader Disconnect];
+    // [kdcReader Disconnect];
 }
 -(void)onDidBecomeActive :(UIApplication *)application {
     [kdcReader Connect];
@@ -82,10 +82,8 @@
 //************************************************************************
 - (void)kdcBarcodeDataArrived:(NSNotification *)notification
 {
-    NSLog(@"%s",__FUNCTION__);
-
     KDCReader *kReader = (KDCReader *)[notification object];
-    NSString* barcodeString = [kReader GetBarcodeData];
+    NSString* barcodeString = [NSString stringWithFormat:@"{\"scan\":\"%@\"}", [kReader GetBarcodeData]];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsString:barcodeString];
 
@@ -107,6 +105,12 @@
  */
 - (void)enable:(CDVInvokedUrlCommand*)command {
     self.callbackId = command.callbackId;
+
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsString:@"{\"status\":\"success\"}"];
+    [pluginResult setKeepCallbackAsBool:YES];
+    [self.commandDelegate sendPluginResult:pluginResult
+                                callbackId:self.callbackId];
 }
 
 /**
