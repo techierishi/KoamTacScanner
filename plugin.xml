@@ -44,6 +44,13 @@
         <source-file src="src/ios/KoamTac/libKDCReader.a" framework="true" />
 
         <framework src="ExternalAccessory.framework" />
+        
+        <!-- Add plist entries -->
+        <config-file target="*-Info.plist" parent="UISupportedExternalAccessoryProtocols">
+            <array>
+                <string>com.koamtac.kdc</string>
+            </array>
+        </config-file>
     </platform>
 
     <!-- android -->
