@@ -1,7 +1,7 @@
-After importing the plugin into your XCode project, you'll need
-to ensure you configure your project to enable the KoamTac protocol.
-In your *-Info.plist file add the following K/V pair:
+After importing the plugin into your XCode project, double check your *-Info.plist file add the following K/V pair:
 
 Supported External Accessory Protocols: [ Item 0: com.koamtac.kdc ]
 
 ![Supported External Accessory Protocols](http://i.imgur.com/dF2e2LK.png)
+
+It should be added automatically by the plugin, but you know.... cordova.
