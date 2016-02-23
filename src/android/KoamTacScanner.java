@@ -160,6 +160,9 @@ public class KoamTacScanner extends CordovaPlugin implements
           _kdcReader.SetNFCDataFormat(KDCConstants.NFCDataFormat.PACKET_FORMAT);
           _kdcReader.EnableNFCUIDOnly(true);
         }
+        if (_kdcReader.IsConnected() ) {
+          sendResult(PluginResult.Status.OK, buildStatusMessage("success"));
+        }
     }
 
     // Check Bluetooth and Connect to existing device or first available device
