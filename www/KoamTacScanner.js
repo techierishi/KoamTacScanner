@@ -1,7 +1,3 @@
-//exports.coolMethod = function(arg0, success, error) {
-//    exec(success, error, "KoamTacScanner", "coolMethod", [arg0]);
-//};
-
 var KoamTacScanner = {
   enable: function(successCallback, errorCallback, onScan) {
     var handleCallback = function(results) {
