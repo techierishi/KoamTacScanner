@@ -9,7 +9,16 @@ var KoamTacScanner = {
       if(results.status && noOnScan) {
         if (results.status === 'success') { successCallback(); }
       } else if (results.status) {
-        successCallback(results.status);
+        switch(results.status) {
+          case "CONNECTING":
+            break; // do nothing because either success or fail will follow
+          case "CONNECTED":
+          case "success":
+            successCallback(results.status);
+            break;
+          default:
+            errorCallback("KoamTac is Not Connected");
+        }
       } else if (results.scan) {
         onScan(results.scan);
       }
@@ -19,7 +28,6 @@ var KoamTacScanner = {
 
   disable: function(successCallback, errorCallback) {
     var handleCallback = function(results) {
-      console.log(results);
       results = JSON.parse(results);
       successCallback(results.status);
     }
