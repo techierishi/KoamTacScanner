@@ -4,25 +4,43 @@ var KoamTacScanner = {
     // could not detect if the scanner didn't initialize properly
     var noOnScan = !onScan;
     if (noOnScan) { onScan = successCallback; }
+
     var handleCallback = function(results) {
       results = JSON.parse(results);
+
       if(results.status && noOnScan) {
-        if (results.status === 'success') { successCallback(); }
+        if (results.status === 'success' || results.status === 'CONNECTED') {
+          successCallback();
+        }
       } else if (results.status) {
-        successCallback(results.status);
-      } else if (results.scan) {
+        switch(results.status) {
+          case "CONNECTING":
+            break; // do nothing because either success or fail will follow
+
+          case "CONNECTED":
+          case "success":
+            successCallback(results.status);
+            break;
+
+          default:
+            errorCallback("KoamTac is Not Connected");
+        }
+      }
+      else if (results.scan) {
         onScan(results.scan);
       }
     }
+
     cordova.exec(handleCallback,errorCallback,'KoamTacScanner','enable',[]);
   },
 
   disable: function(successCallback, errorCallback) {
     var handleCallback = function(results) {
-      console.log(results);
       results = JSON.parse(results);
+
       successCallback(results.status);
     }
+
     cordova.exec(handleCallback,errorCallback,'KoamTacScanner','disable',[]);
   }
 }
