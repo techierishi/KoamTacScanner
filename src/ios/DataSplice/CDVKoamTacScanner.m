@@ -71,24 +71,17 @@
 
 
 //************************************************************************
-//  Notification from KDCReader when connection has been changed
+//  Reader Event Notifications
 //************************************************************************
-- (void)kdcConnectionChanged:(NSNotification *)notification
+/**
+ *  Notification from KDCReader when connection has been changed
+ */
+- (void) kdcConnectionChanged :(NSNotification*) notification
 {
-    NSLog(@"%s",__FUNCTION__);
+    [self updateConnectionStatus];
+}
 
-    KDCReader *kReader = (KDCReader *)[notification object];
-    NSString *status = @"";
 
-    if ( [kReader IsKDCConnected] ) {
-        status = @"{\"status\": \"CONNECTED\"}";
-    }
-    else {
-        status = @"{\"status\": \"DISCONNECTED\"}";
-    }
-    NSLog(@"Sending message %",status);
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsString:status];
 
     // ensure we keep the callback (to push subsequent barcodes to the app)
     [pluginResult setKeepCallbackAsBool:YES];
@@ -189,13 +182,17 @@
     NSString *gpsString = [NSString stringWithFormat:@"{\"scan\":\"%@\"}", [kReader GetGPSData]];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsString:gpsString];
+/**
+ *  Connects to a paired scanner and starts listening for scan events.
+ */
+- (void) enable :(CDVInvokedUrlCommand*) command {
+    BOOL callbackWasNil = [self callbackId] == nil;
 
-    // ensure we keep the callback (to push subsequent barcodes to the app)
-    [pluginResult setKeepCallbackAsBool:YES];
+    self.callbackId = [command callbackId];
 
-    // send the result
-    [self.commandDelegate sendPluginResult:pluginResult
-                                callbackId:self.callbackId];
+    callbackWasNil ?
+        [self delayUpdateConnectionStatus: command: 15]:
+        [self updateConnectionStatus];
 }
 
 
@@ -206,7 +203,6 @@
 /**
  * Connects to a paired scanner and starts listening for scan events.
  */
-- (void)enable:(CDVInvokedUrlCommand*)command {
     self.callbackId = command.callbackId;
 
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
@@ -223,27 +219,59 @@
     self.callbackId = command.callbackId;
     // [kscan ScanBarcode]; // KScan will call BarcodeDataArrived
     [kdcReader SoftwareTrigger];
+- (void) disable :(CDVInvokedUrlCommand*) command {
+    self.callbackId = [command callbackId];
+
+    [self updateConnectionStatus];
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+//************************************************************************
+//  Connection Status Related Functionality
+//************************************************************************
+/**
+ *  Sends message to the JS side of the Cordova plugin to update device connection status.
+ */
+- (void) updateConnectionStatus
+{
+    NSString* status = [self.kdcReader IsKDCConnected] ? @"CONNECTED" : @"DISCONNECTED";
+
+    NSString* message = [NSString stringWithFormat:  @"{\"status\": \"%@\"}", status];
+
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus: CDVCommandStatus_OK
+                                                      messageAsString: message];
+
+    [pluginResult setKeepCallbackAsBool: YES];
+
+    [self.commandDelegate sendPluginResult: pluginResult
+                                callbackId: self.callbackId];
 }
 
 /**
- * Kills all bleutooth communication threads.
+ *  Used to handle bug where connection status hangs on "Updating" upon initialization. This happens when device
+ *  is disconnected, the application is closed and relaunched, and the first time you select the KoamTac driver. If you select
+ *  another driver and then select the KoamTac again, everything is all good.
  */
-- (void)disable:(CDVInvokedUrlCommand*)command {
-    //[kdcReader Disconnect];
-    self.callbackId = nil;
-//    [self.callbackId release];
-
-    // Send the result
-    // No need to keep the callback on this one.
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-    [self.commandDelegate sendPluginResult:pluginResult
-                                callbackId:self.callbackId];
+- (void) delayUpdateConnectionStatus :(CDVInvokedUrlCommand*) command :(NSTimeInterval) delay
+{
+    [NSTimer scheduledTimerWithTimeInterval: delay
+                                     target: self
+                                   selector: @selector(handleDelayedUpdateConnectionStatus:)
+                                   userInfo: command
+                                    repeats: NO];
 }
 
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-//    [super dealloc];
+/**
+ *  Handler for delayedUpdateConnectionStatus
+ */
+-(void) handleDelayedUpdateConnectionStatus :(NSTimer*) timer
+{
+    [self enable: (CDVInvokedUrlCommand*) [timer userInfo]];
 }
-
 
 @end
