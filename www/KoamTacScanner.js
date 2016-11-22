@@ -1,3 +1,7 @@
+var ERRORS = {
+  CONNECTION_ERROR: {code: 1, message: "KoamTac is Not Connected"},
+  PARSE_ERROR: {code: 2, message: "Result parse error"},
+};
 var KoamTacScanner = {
   enable: function(successCallback, errorCallback, onScan) {
     // deprecated - older versions only passed the scan and error callbacks and
@@ -6,7 +10,11 @@ var KoamTacScanner = {
     if (noOnScan) { onScan = successCallback; }
 
     var handleCallback = function(results) {
-      results = JSON.parse(results);
+      try {
+        results = JSON.parse(results);
+      } catch(e) {
+        errorCallback(ERRORS.PARSE_ERROR);
+      }
 
       if(results.status && noOnScan) {
         if (results.status === 'success' || results.status === 'CONNECTED') {
@@ -23,7 +31,7 @@ var KoamTacScanner = {
             break;
 
           default:
-            errorCallback("KoamTac is Not Connected");
+            errorCallback(ERRORS.CONNECTION_ERROR);
         }
       }
       else if (results.scan) {
@@ -36,8 +44,11 @@ var KoamTacScanner = {
 
   disable: function(successCallback, errorCallback) {
     var handleCallback = function(results) {
-      results = JSON.parse(results);
-
+      try {
+        results = JSON.parse(results);
+      } catch(e) {
+        errorCallback(ERRORS.PARSE_ERROR);
+      }
       successCallback(results.status);
     }
 
