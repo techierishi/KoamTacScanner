@@ -9,18 +9,27 @@
 #ifndef KDCReader_KDCConstants_h
 #define KDCReader_KDCConstants_h
 
+/*!
+ * @enum EnableDisable
+ */
 enum EnableDisable
 {
     DISABLE = 0,
     ENABLE
 };
 
+/*!
+ * @enum KDCMode
+ */
 enum KDCMode
 {
     NORMAL = 0,
     APPLICATION
 };
 
+/*!
+ * @enum DataDelimiter
+ */
 enum DataDelimiter
 {
     NONE = 0,
@@ -30,6 +39,9 @@ enum DataDelimiter
     SEMICOLON
 };
 
+/*!
+ * @enum RecordDelimiter
+ */
 enum RecordDelimiter
 {
     RECORD_NONE = 0,
@@ -39,12 +51,18 @@ enum RecordDelimiter
     RECORD_CRnLF
 };
 
+/*!
+ * @enum NFCDataFormat
+ */
 enum NFCDataFormat
 {
     NFC_PACKET_FORMAT = 0,
     NFC_DATA_ONLY
 };
 
+/*!
+ * @enum AESKeyLength
+ */
 enum AESKeyLength
 {
     AES_KEY_128 = 0,
@@ -52,6 +70,9 @@ enum AESKeyLength
     AES_KEY_256
 };
 
+/*!
+ * @enum WedgeMode
+ */
 enum WedgeMode
 {
     WEDGE_ONLY = 0,
@@ -61,13 +82,21 @@ enum WedgeMode
     STORE_IF_NOT_SENT
 };
 
+/*!
+ * @enum AIMID
+ */
 enum AIMID
 {
     AIMID_NONE = 0,
-    IN_PREFIX,
-    IN_SUFFIX
+    AIMID_PREFIX,
+    AIMID_SUFFIX,
+    IN_PREFIX = AIMID_PREFIX,
+    IN_SUFFIX = AIMID_SUFFIX
 };
 
+/*!
+ * @enum DataTerminator
+ */
 enum DataTerminator
 {
     TERMINATOR_NONE = 0,
@@ -81,6 +110,9 @@ enum DataTerminator
     UP_ARROW
 };
 
+/*!
+ * @enum PowerOnTime
+ */
 enum PowerOnTime
 {
     POWERON_DISABLED = 0,
@@ -96,6 +128,9 @@ enum PowerOnTime
     POWERON_10_SECONDS
 };
 
+/*!
+ * @enum SleepTimeout
+ */
 enum SleepTimeout
 {
     SLEEP_TIMEOUT_DISABLED = 0,
@@ -113,6 +148,9 @@ enum SleepTimeout
     SLEEP_TIMEOUT_600_SECONDS = 600
 };
 
+/*!
+ * @enum DisplayFormat
+ */
 enum DisplayFormat
 {
     TIME_BATTERY = 0,
@@ -123,6 +161,9 @@ enum DisplayFormat
     DISPLAY_FORMAT_BARCODE_ONLY
 };
 
+/*!
+ * @enum AutoPowerOffTimeout
+ */
 enum AutoPowerOffTimeout
 {
     POWEROFF_DISABLE = 0,
@@ -134,6 +175,9 @@ enum AutoPowerOffTimeout
     POWEROFF_120_MINUTES = 120
 };
 
+/*!
+ * @struct DateTime
+ */
 struct DateTime
 {
     uint8_t     Year;
@@ -144,6 +188,9 @@ struct DateTime
     uint8_t     Second;
 };
 
+/*!
+ * @enum MemoryConfiguration
+ */
 enum MemoryConfiguration
 {
     MEMORY_0p5M_3p5M = 0,
@@ -153,24 +200,36 @@ enum MemoryConfiguration
     MEMORY_4M_0M
 };
 
+/*!
+ * @enum GPSPowerSaveMode
+ */
 enum GPSPowerSaveMode
 {
     GPS_NORMAL = 0,
     GPS_POWER_SAVE
 };
 
+/*!
+ * @struct BarcodeSymbolSettings
+ */
 struct BarcodeSymbolSettings
 {
     uint32_t    FirstSymbols;
     uint32_t    SecondSymbols;
-} CurrentBarcodeSymbols;
+};
 
+/*!
+ * @struct BarcodeOptionSettings
+ */
 struct BarcodeOptionSettings
 {
     uint32_t    FirstOptions;
     uint32_t    SecondOptions;
-} CurrentBarcodeOptions;
+};
 
+/*!
+ * @enum ScanTimeout
+ */
 enum ScanTimeout
 {
     SCANTIMEOUT_500_MS = 500,
@@ -186,6 +245,9 @@ enum ScanTimeout
     SCANTIMEOUT_10_SECONDS = 10000
 };
 
+/*!
+ * @enum AutoTriggerRereadDelay
+ */
 enum AutoTriggerRereadDelay
 {
     REREAD_CONTINUOUS = 0,
@@ -195,18 +257,27 @@ enum AutoTriggerRereadDelay
     REREAD_EXTRA_LONG
 };
 
+/*!
+ * @enum PartialAction
+ */
 enum PartialAction
 {
     ERASE = 0,
     SELECT
 };
 
+/*!
+ * @enum DataFormat
+ */
 enum DataFormat
 {
     BARCODE_ONLY = 0,
     PACKET_DATA
 };
 
+/*!
+ * @enum MessageFontSize
+ */
 enum MessageFontSize
 {
     FONT_8x8 = 0,
@@ -219,4 +290,134 @@ enum MessageFontSize
     FONT_32x32
 };
 
+/*!
+ * @enum MessageTextAttribute
+ */
+enum MessageTextAttribute
+{
+    NORMAL_TEXT = 0,
+    REVERSE_TEXT
+};
+
+/*!
+ * @enum LEDState
+ */
+enum LEDState
+{
+    GREEN_LED_OFF = 0,
+    GREEN_LED_ON,
+    RED_LED_OFF,
+    RED_LED_ON,
+    BOTH_LED_OFF,
+    BOTH_LED_ON
+};
+
+/*!
+ * @enum DataType
+ */
+enum DataType
+{
+    UNKNOWN = 0,
+    BARCODE,
+    MSR,
+    GPS,
+    NFC_OLD,
+    NFC_NEW,
+    APPLICATION_DATA
+};
+
+/*!
+ * @enum NFCTag
+ */
+enum NFCTag
+{
+    NDEF_TYPE1 = 0,
+    NDEF_TYPE2,
+    RFID,
+    CALYPSO,
+    MIFARE_4K,
+    TYPE_A,
+    TYPE_B,
+    FELICA,
+    JEWEL,
+    MIFARE_1K,
+    MIFARE_UL_C,
+    MIFARE_UL,
+    MIFARE_DESFIRE,
+    ISO15693
+};
+
+/*!
+ * @enum AESBitLengths
+ */
+enum AESBitLengths
+{
+    AES_128_BITS = 0,
+    AES_192_BITS,
+    AES_256_BITS
+};
+
+/*!
+ * @enum MSRCardType
+ */
+enum MSRCardType
+{
+    MSR_CARD_ISO = 0,
+    MSR_CARD_OTHER_1,
+    MSR_CARD_AAMVA
+};
+
+/*!
+ * @enum MSRDataType
+ */
+enum MSRDataType
+{
+    MSR_DATA_PAYLOAD = 0,
+    MSR_DATA_PACKET
+};
+
+/*!
+ * @enum MSRDataEncryption
+ */
+enum MSRDataEncryption
+{
+    ENCRYPT_NONE = 0,
+    ENCRYPT_AES
+};
+
+/*!
+ * @enum MSRTrack
+ */
+enum MSRTrack
+{
+    MSR_TRACK1 = 0x01,
+    MSR_TRACK2 = 0x01 << 1,
+    MSR_TRACK3 = 0x01 << 3
+};
+
+/*!
+ * @enum MSRTrackSeparator
+ */
+enum MSRTrackSeparator
+{
+    SEPARATOR_NONE,
+    SEPARATOR_SPACE,
+    SEPARATOR_COMMA,
+    SEPARATOR_SEMICOLON,
+    SEPARATOR_CR,
+    SEPARATOR_LF,
+    SEPARATOR_CRLF,
+    SEPARATOR_TAB
+};
+
+/*!
+ * @enum WiFiProtocol
+ */
+enum WiFiProtocol
+{
+    UDP = 0,
+    TCP,
+    HTTP_GET,
+    HTTP_POST
+};
 #endif

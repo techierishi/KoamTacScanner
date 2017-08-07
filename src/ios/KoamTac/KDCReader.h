@@ -9,6 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <ExternalAccessory/ExternalAccessory.h>
 #import "KDCConstants.h"
+#import "KPOSData.h"
+#import "KPOSResult.h"
+#import "KPOSConstants.h"
+
+#if (1)
+#define DEPRECATED
+#else
+#if !defined(DEPRECATED)
+#define DEPRECATED __deprecated
+#endif
+#endif
 
 extern  NSString *kdcConnectionChangedNotification;
 extern  NSString *kdcDataArrivedNotification;
@@ -16,86 +27,160 @@ extern  NSString *kdcBarcodeDataArrivedNotification;
 extern  NSString *kdcMSRDataArrivedNotification;
 extern  NSString *kdcGPSDataArrivedNotification;
 extern  NSString *kdcNFCDataArrivedNotification;
+extern  NSString *kposDataArrivedNotification;
+extern  NSString *kdcNewDeviceArrivedNotification;
 
-@interface KDCReader : NSObject {
-    
-}
+extern  NSString *kposDataArrivedNotification; // KDC500
+
+extern  NSString *keyAccessory;
+extern  NSString *keyKPOSData; // KDC500
+
+@interface KDCReader : NSObject
+
+- (NSMutableArray *)GetAvailableDeviceList;
+- (EAAccessory *)GetConnectedDevice;
+- (NSString *)GetConnectedDeviceName;
 
 - (NSString *)GetSDKRevisionHistory;
+- (NSString *)GetKDCReaderVersion;
 - (BOOL)Connect;
-- (BOOL) IsKDCConnected;
+- (BOOL)Connect:(EAAccessory *)accessory;
+- (void)Disconnect;
+
+- (BOOL) IsKDCConnected DEPRECATED;
+- (BOOL) IsConnected;
 
 - (void )SoftwareTrigger;
 
 //Device features
-- (uint8_t *)GetSerialNumber;
-- (uint8_t *)GetFirmwareVersion;
-- (uint8_t *)GetModelName;
-- (BOOL) Is2DSupported;
-- (BOOL) IsMSRSupported;
-- (BOOL) IsGPSSupported;
+- (uint8_t *)GetSerialNumber DEPRECATED;
+- (uint8_t *)GetFirmwareVersion DEPRECATED;
+- (uint8_t *)GetModelName DEPRECATED;
+- (uint8_t *)GetKDCSerialNumber;
+- (uint8_t *)GetKDCFirmwareVersion;
+- (uint8_t *)GetKDCModelName;
+
+- (BOOL) Is2DSupported DEPRECATED;
+- (BOOL) IsModel2D;
+
 - (BOOL) IsNFCSupported;
+- (BOOL) IsGPSSupported;
+- (BOOL) IsMSRSupported;
+- (BOOL) IsPOSSupported;
+- (BOOL) IsBarcodeSupported;
 - (BOOL) IsKeyPadSupported;
 - (BOOL) IsFlashSupported;
 - (BOOL) IsVibratorSupported;
-- (BOOL) IsPOSSupported;
-- (BOOL) IsBarcodeSupported;
+- (BOOL) IsUHFSupported;
+- (BOOL) IsCMDASupported;
+- (BOOL) IsWiFiSupported;
+- (BOOL) IsPassportReaderSupported;
+- (BOOL) IsFingerPrintSupported;
 
 //KDC Mode
 - (BOOL) SetKDCMode:(enum KDCMode)mode;
 - (enum KDCMode) GetKDCMode;
 
 //Data related
+- (enum DataType)GetDataType;
+- (enum NFCTag)GetNFCTagType;
 
 - (NSString *)GetData;
+- (Byte *)GetDataBytes;
+- (int)GetDataBytesLength;
+
 - (NSString *)GetNFCUID;
 - (NSString *)GetNFCUIDReversed;
 - (NSString *)GetNFCData;
-- (uint8_t *)GetNFCRawData;
-- (int)GetNFCRawDataLength;
+- (NSString *)GetNFCDataBase64;
+
+- (uint8_t *)GetNFCRawData DEPRECATED;
+- (Byte *) GetNFCDataBytes;
+
+- (int)GetNFCRawDataLength DEPRECATED;
+- (int) GetNFCDataBytesLength;
+
 - (NSString *)GetBarcodeData;
-- (uint8_t *)GetBarcodeRawData;
-- (int)GetBarcodeRawDataLength;
+- (uint8_t *)GetBarcodeRawData DEPRECATED;
+- (Byte *) GetBarcodeDataBytes;
+- (int)GetBarcodeRawDataLength DEPRECATED;
+- (int) GetBarcodeDataBytesLength;
+
 - (NSString *)GetMSRData;
-- (uint8_t *)GetMSRRawData;
-- (int)GetMSRRawDataLength;
+- (uint8_t *)GetMSRRawData DEPRECATED;
+- (Byte *) GetMSRDataBytes;
+- (int)GetMSRRawDataLength DEPRECATED;
+- (int) GetMSRDataBytesLength;
+
 - (NSString *)GetGPSData;
-- (NSString *)GetRecordData;
+
+- (NSString *)GetRecordData DEPRECATED;
+- (NSString *)GetRecord;
+
+- (NSDateComponents *)GetTimestamp;
+
 - (void) EnableAttachType:(BOOL)enabled;
 - (void) EnableAttachTimestamp:(BOOL)enabled;
 - (void) EnableAttachSerialNumber:(BOOL)enabled;
 - (void) EnableAttachLocation:(BOOL)enabled;
-- (void) SetDataDelimiter:(enum DataDelimiter)delimiter;
-- (void) SetRecordDelimiter:(enum RecordDelimiter)delimiter;
+
+- (void)SetDataDelimiter:(enum DataDelimiter)delimiter;
+- (NSString *)GetDataDelimiter;
+- (void)SetRecordDelimiter:(enum RecordDelimiter)delimiter;
+- (NSString *)GetRecordDelimiter;
 
 //NFC related
 - (enum NFCDataFormat) GetNFCDataFormat;
 - (BOOL) SetNFCDataFormat:(enum NFCDataFormat)format;
+
+- (BOOL) EnableNFCPower:(enum EnableDisable)enabled;
+- (enum EnableDisable) IsNFCPowerEnabled;
+
 - (BOOL) EnableNFCUIDOnly:(enum EnableDisable)enabled;
-- (BOOL) IsNFCUIDOnlyEnabled;
+- (enum EnableDisable) IsNFCUIDOnlyEnabled;
 - (BOOL) EnableNFCExtendedFormat:(enum EnableDisable)enabled;
-- (BOOL) IsNFCExtendedFormatEnabled;
+- (enum EnableDisable) IsNFCExtendedFormatEnabled;
+
+- (BOOL) WriteNDEFDataToNFCTag:(Byte *)nfcNDEFData length:(int)length;
+- (BOOL) WriteBinaryDataToNFCTag:(Byte *)nfcData length:(int)length;
 
 //Bluetooth related
-- (uint8_t *)GetBluetoothMacAddress;
+- (uint8_t *)GetBluetoothMacAddress DEPRECATED;
+- (uint8_t *)GetBluetoothMACAddress;
 - (uint8_t *)GetBluetoothFirmwareVersion;
-- (BOOL) EnableAutoConnect:(enum EnableDisable)setting;
+
+- (BOOL) EnableAutoConnect:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableBluetoothAutoConnect:(enum EnableDisable)setting;
 - (enum EnableDisable) IsAutoConnectEnabled;
+
 - (BOOL) EnableAutoReconnect:(enum EnableDisable)setting;
 - (enum EnableDisable) IsAutoReconnectEnabled;
-- (BOOL) EnableAutoPowerOn:(enum EnableDisable)setting;
+
+- (BOOL) EnableAutoPowerOn:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableBluetoothAutoPowerOn:(enum EnableDisable)setting;
 - (enum EnableDisable) IsAutoPowerOnEnabled;
-- (BOOL) EnablePowerOffMessage:(enum EnableDisable)setting;
+
+- (BOOL) EnablePowerOffMessage:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableBluetoothPowerOffMessage:(enum EnableDisable)setting;
 - (enum EnableDisable) IsPowerOffMessageEnabled;
-- (BOOL) EnableWakeupNulls:(enum EnableDisable)setting;
+
+- (BOOL) EnableWakeupNulls:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableBluetoothWakeupNull:(enum EnableDisable)setting;
 - (enum EnableDisable) IsWakeupNullsEnabled;
+
 - (BOOL) EnableBluetoothToggle:(enum EnableDisable)setting;
 - (enum EnableDisable) IsBluetoothToggleEnabled;
+
 - (BOOL) EnableBluetoothDisconnectButton:(enum EnableDisable)setting;
 - (enum EnableDisable) IsBluetoothDisconnectButtonEnabled;
-- (BOOL) SetBluetoothPowerOnTime:(enum PowerOnTime)powerontime;
-- (enum PowerOnTime) GetBluetoothPowerOnTime;
+
+- (BOOL) SetBluetoothPowerOnTime:(enum PowerOnTime)powerontime DEPRECATED;
+- (enum PowerOnTime) GetBluetoothPowerOnTime DEPRECATED;
+- (BOOL) SetBluetoothAutoPowerOnDelay:(enum PowerOnTime)powerontime;
+- (enum PowerOnTime) GetBluetoothAutoPowerOnDelay;
+
 - (BOOL) EnableBluetoothBeepWarning:(enum EnableDisable)setting;
+
 - (BOOL) SetBluetoothAutoPowerOffTimeout:(enum AutoPowerOffTimeout)powerofftimeout;
 - (enum AutoPowerOffTimeout) GetBluetoothAutoPowerOffTimeout;
 
@@ -107,8 +192,10 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (BOOL) DisableAllOptions;
 - (BOOL) EnableAllOptions;
 
-- (struct BarcodeSymbolSettings) GetCurrentBarcodeSymbolSettings;
-- (BOOL) SetCurrentBarcodeSymbolSettings:(struct BarcodeSymbolSettings) settings;
+- (struct BarcodeSymbolSettings) GetCurrentBarcodeSymbolSettings DEPRECATED;
+- (BOOL) SetCurrentBarcodeSymbolSettings:(struct BarcodeSymbolSettings) settings DEPRECATED;
+- (struct BarcodeSymbolSettings) GetSymbology;
+- (BOOL) SetSymbology:(struct BarcodeSymbolSettings) settings;
 
 - (BOOL) EnableDisableEAN13:(enum EnableDisable)enabled;
 - (enum EnableDisable) IsEAN13Enabled;
@@ -212,8 +299,10 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (enum EnableDisable) IsOCRSEMIEnabled;
 
 //Barcode options
-- (struct BarcodeOptionSettings) GetCurrentBarcodeOptionSettings;
-- (BOOL) SetCurrentBarcodeOptionSettings:(struct BarcodeOptionSettings) settings;
+- (struct BarcodeOptionSettings) GetCurrentBarcodeOptionSettings DEPRECATED;
+- (BOOL) SetCurrentBarcodeOptionSettings:(struct BarcodeOptionSettings) settings DEPRECATED;
+- (struct BarcodeOptionSettings) GetBarcodeOption;
+- (BOOL) SetBarcodeOption:(struct BarcodeOptionSettings) settings;
 
 - (BOOL) EnableDisableCODABAR_TX_STARTSTOP:(enum EnableDisable)enabled;
 - (enum EnableDisable) IsCODABAR_TX_STARTSTOPEnabled;
@@ -366,23 +455,47 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (enum ScanTimeout) GetScanTimeout;
 - (BOOL) SetMinimumBarcodeLength:(int)minlength;
 - (int) GetMinimumBarcodeLength;
-- (BOOL) EnableAutoTriggerMode:(enum EnableDisable)setting;
-- (enum EnableDisable) IsAutoTriggerModeEnabled;
+
+- (BOOL) EnableAutoTriggerMode:(enum EnableDisable)setting DEPRECATED;
+- (enum EnableDisable) IsAutoTriggerModeEnabled DEPRECATED;
+- (BOOL) EnableAutoTrigger:(enum EnableDisable)setting;
+- (enum EnableDisable) IsAutoTriggerEnabled;
+
+- (BOOL) EnablePartialDisplayMenuEntry:(enum EnableDisable)setting;
+
 - (BOOL) SetAutoTriggerRereadDelay:(enum AutoTriggerRereadDelay)delay;
 - (int) GetAutoTriggerRereadDelay;
-- (BOOL) SetPartialDisplayStartPosition:(int)position;
-- (BOOL) SetPartialDisplayLength:(int)length;
+
+- (BOOL) SetPartialDisplayStartPosition:(int)position DEPRECATED;
+- (BOOL) SetPartialDisplayLength:(int)length DEPRECATED;
+- (BOOL) SetPartialDataDisplayStartPosition:(int)position;
+- (BOOL) SetPartialDataDisplayLength:(int)length;
+
 - (BOOL) SetPartialDisplayAction:(enum PartialAction)action;
 - (enum PartialAction) GetPartialDisplayAction;
 
 //Data process
 - (BOOL)SetDataFormat:(int)format;
-- (BOOL) SetWedgeStoreMode:(enum WedgeMode)wedgemode;
-- (enum WedgeMode) GetWedgeStoreMode;
-- (char *) GetPrefix;
-- (BOOL) SetPrefix:(char *)prefix;
-- (char *) GetSuffix;
-- (BOOL) SetSuffix:(char *)suffix;
+- (int)GetDataFormat;
+
+- (BOOL) SetWedgeStoreMode:(enum WedgeMode)wedgemode DEPRECATED;
+- (BOOL) SetDataProcessMode:(enum WedgeMode)wedgemode;
+
+- (enum WedgeMode) GetWedgeStoreMode DEPRECATED;
+- (enum WedgeMode) GetDataPrcessMode;
+
+- (char *) GetPrefix DEPRECATED;
+- (char *) GetDataPrefix;
+
+- (BOOL) SetPrefix:(char *)prefix DEPRECATED;
+- (BOOL) SetDataPrefix:(char *)prefix;
+
+- (char *) GetSuffix DEPRECATED;
+- (char *) GetDataSuffix;
+
+- (BOOL) SetSuffix:(char *)suffix DEPRECATED;
+- (BOOL) SetDataSuffix:(char *)suffix;
+
 - (enum AIMID) GetAIMIDSetting;
 - (BOOL) SetAIMIDSetting:(enum AIMID)aimid;
 - (BOOL) SetPartialDataStartPosition:(int)position;
@@ -391,6 +504,10 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (int) GetPartialDataLength;
 - (BOOL) SetPartialDataAction:(enum PartialAction)action;
 - (enum PartialAction) GetPartialDataAction;
+
+- (BOOL) FinishSynchronization;
+- (BOOL) StartSynchronization;
+
 - (BOOL) SetDataTerminator:(enum DataTerminator)terminator;
 - (enum DataTerminator) GetDataTerminator;
 - (BOOL) EnableDuplicateCheck:(enum EnableDisable)duplicateCheckOn;
@@ -401,64 +518,239 @@ extern  NSString *kdcNFCDataArrivedNotification;
 - (enum EnableDisable) IsExtendKeypadEnabled;
 
 //GPS config
-- (BOOL) SetGPSPower:(enum EnableDisable)power;
-- (BOOL) SetGPSBypassMode:(enum EnableDisable)setting;
+- (BOOL) SetGPSPower:(enum EnableDisable)power DEPRECATED;
+- (BOOL) SetGPSBypassMode:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableGPSModulePower:(enum EnableDisable)power;
+- (BOOL) EnableGPSBypassDataMode:(enum EnableDisable)setting;
+
 - (BOOL) ResetGPSModule;
 - (BOOL) GPSAcquireTest;
-- (BOOL) SetGPSPowerSaveMode:(enum GPSPowerSaveMode)mode;
-- (enum GPSPowerSaveMode) GetGPSPowerSaveMode;
+
+- (BOOL) SetGPSPowerSaveMode:(enum GPSPowerSaveMode)mode DEPRECATED;
+- (enum GPSPowerSaveMode) GetGPSPowerSaveMode DEPRECATED;
+- (BOOL) SetGPSPowerMode:(enum GPSPowerSaveMode)mode;
+- (enum GPSPowerSaveMode) GetGPSPowerMode;
+
+- (BOOL) SetGPSAutoPowerOffTimeout:(int)timeout;
+- (int) GetGPSAutoPowerOffTimeout;
+
 
 //System Config
 - (BOOL) SetMemoryConfiguration:(enum MemoryConfiguration)memoryconfig;
 - (enum MemoryConfiguration) GetMemoryConfiguration;
-- (BOOL) EraseSystemMemory;
-- (int) GetStoredBarcodeNumber;
+
+- (BOOL) EraseSystemMemory DEPRECATED;
+- (BOOL) EraseMemory;
+
+- (BOOL) EraseLastData;
+
+- (int) GetStoredBarcodeNumber DEPRECATED;
+- (int) GetNumberOfStoredBarcode;
+
 - (int) GetMemoryLeft;
-- (int) GetBatteryCapacity;
-- (NSString *) GetSystemRTC;
-- (BOOL) SetSystemRTC:(struct DateTime)datetime;
-- (BOOL) SyncSystemRTC;
-- (BOOL) ResetSystemRTC;
+
+- (int) GetCurrentDBMemorySize;
+
+- (int) GetBatteryCapacity DEPRECATED;
+- (int) GetBatteryLevel;
+
+- (NSString *) GetSystemRTC DEPRECATED;
+- (NSString *) GetTime;
+
+- (BOOL) SetSystemRTC:(struct DateTime)datetime DEPRECATED;
+- (BOOL) SetTime:(struct DateTime)datetime;
+
+- (BOOL) SyncSystemRTC DEPRECATED;
+- (BOOL) SyncSystemTime;
+
+- (BOOL) ResetSystemRTC DEPRECATED;
+- (BOOL) ResetSystemTime;
+
 - (BOOL) EnableAutoErase:(enum EnableDisable)setting;
 - (enum EnableDisable) IsAutoEraseEnabled;
+
 - (BOOL) EnableBluetoothAutoPowerOff:(enum EnableDisable)setting;
 - (enum EnableDisable) IsBluetoothAutoPowerOffEnabled;
+
 - (BOOL) EnableGPSAutoPowerOff:(enum EnableDisable)setting;
+
 - (BOOL) EnableButtonLock:(enum EnableDisable)setting;
+- (BOOL) EnableScanButtonLock:(enum EnableDisable)setting;
+
 - (BOOL) EnableBeepSound:(enum EnableDisable)setting;
 - (enum EnableDisable) IsBeepSoundEnabled;
+
 - (BOOL) EnableBeepOnScan:(enum EnableDisable)setting;
 - (enum EnableDisable) IsBeepOnScanEnabled;
+
 - (BOOL) EnableVibrator:(enum EnableDisable)setting;
 - (enum EnableDisable) IsVibratorEnabled;
-- (BOOL) EnableMenuAutoExit:(enum EnableDisable)setting;
-- (BOOL) EnableMenuBarcode:(enum EnableDisable)setting;
-- (enum EnableDisable) IsMenuBarcodeEnabled;
-- (BOOL) EnableScrolling:(enum EnableDisable)setting;
+
+- (BOOL) EnableMenuAutoExit:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableAutoMenuExit:(enum EnableDisable)setting;
+- (enum EnableDisable) IsAutoMenuExitEnabled;
+
+- (BOOL) EnableMenuBarcode:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableMenuBarcodeState:(enum EnableDisable)setting;
+- (enum EnableDisable) IsMenuBarcodeEnabled DEPRECATED;
+- (enum EnableDisable) IsMenuBarcodeStateEnabled;
+
+- (BOOL) EnableScrolling:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableDisplayScroll:(enum EnableDisable)setting;
 - (enum EnableDisable) IsScrollingEnabled;
+
 - (BOOL) SetSleepTimeout:(enum SleepTimeout)sleeptimeout;
 - (enum SleepTimeout) GetSleepTimeout;
+
 - (BOOL) SetDisplayFormat:(enum DisplayFormat)displayformat;
+
 - (BOOL) SetAutoPowerOffTimeout:(enum AutoPowerOffTimeout)powerofftimeout;
 - (enum AutoPowerOffTimeout) GetAutoPowerOffTimeout;
-- (BOOL) EnableDisplayPortStatus:(enum EnableDisable)setting;
-- (BOOL) EnableHighBeepVolume:(enum EnableDisable)setting;
-- (BOOL) SetFactoryDefault;
-- (BOOL) LockDateTimeSetting:(enum EnableDisable)setting;
 
+- (BOOL) EnableDisplayPortStatus:(enum EnableDisable)setting DEPRECATED;
+- (BOOL) EnableDisplayConnectionStatus:(enum EnableDisable)setting;
+
+- (BOOL) EnableHighBeepVolume:(enum EnableDisable)setting;
+
+- (BOOL) SetFactoryDefault;
+- (BOOL) SetMenuPassword:(NSString *)password;
+- (BOOL) LockDateTimeSetting:(enum EnableDisable)setting;
+- (enum EnableDisable) IsKeypadEnabled;
+- (BOOL) EnableKeypad:(enum EnableDisable)setting;
 
 //Host message
 - (BOOL)SetDisplayPosition:(int)row :(int)col;
 - (BOOL)ClearDisplay;
-- (BOOL)DisplayTextMessageOnKDC:(char *)text;
-- (BOOL)SetDisplayDuration:(int)seconds;
-- (BOOL)SetDisplayTextFontSize:(enum MessageFontSize)fontsize;
-- (BOOL)BeepSuccess;
-- (BOOL)BeepFailure;
-- (BOOL)MakeCustomBeep:(int)ontime :(int)offtime :(int)repeat;
+
+- (BOOL)DisplayTextMessageOnKDC:(char *)text DEPRECATED;
+- (BOOL)SetDisplayMessage:(char *)text;
+
+- (BOOL)SetDisplayDuration:(int)seconds DEPRECATED;
+- (BOOL)SetDisplayMessageDuration:(int)seconds;
+
+- (BOOL)SetDisplayTextFontSize:(enum MessageFontSize)fontsize DEPRECATED;
+- (BOOL)SetDisplayMessageFontSize:(enum MessageFontSize)fontsize;
+
+- (BOOL)BeepSuccess DEPRECATED;
+- (BOOL)SetSuccessAlertBeep;
+
+- (BOOL)BeepFailure DEPRECATED;
+- (BOOL)SetFailureAlertBeep;
+
+- (BOOL)MakeCustomBeep:(int)ontime :(int)offtime :(int)repeat DEPRECATED;
+- (BOOL)SetCustomBeepTone:(int)ontime :(int)offtime :(int)repeat;
+
+- (BOOL)MakeCustomVibration:(int)ontime :(int)offtime :(int)repeat DEPRECATED;
+- (BOOL)SetCustomVibration:(int)ontime :(int)offtime :(int)repeat;
+
+- (BOOL)SetMessageTextAttribute:(enum MessageTextAttribute)attribute;
+- (BOOL)SetLEDState:(enum LEDState)state;
+- (BOOL)DisplayBitmap:(int)bitmapIndex;
+- (BOOL)DisplayBitmapWithClearScreen:(int)bitmapIndex;
 
 //Stored data
 - (void)GetStoredDataSingle;
+
+// MSR - Only applicable to KDC415, KDC425 and KDC430 models
+- (BOOL)EnableMSRErrorBeep:(enum EnableDisable)isEnable;
+- (enum EnableDisable)IsMSRErrorBeepEnabled;
+- (NSString *)GetAESKey;
+- (BOOL)SetAESKey:(NSString *)aesKey;
+- (enum AESBitLengths)GetAESKeyLength;
+- (BOOL)SetAESKeyLength:(enum AESBitLengths)keyLength;
+- (enum MSRCardType)GetMSRCardType;
+- (BOOL)SetMSRCardType:(enum MSRCardType)cardType;
+- (enum MSRDataEncryption)GetMSRDataEncryption;
+- (BOOL)SetMSRDataEncryption:(enum MSRDataEncryption)encryption;
+- (enum MSRDataType)GetMSRDataType;
+- (BOOL)SetMSRDataType:(enum MSRDataType)dataType;
+- (int)GetMSRTrackSelection;
+- (BOOL)SetMSRTrackSelection:(int)selection;
+- (enum MSRTrackSeparator)GetMSRTrackSeparator;
+- (BOOL)SetMSRTrackSeparator:(enum MSRTrackSeparator)separator;
+- (enum PartialAction)GetPartialDataMSRAction;
+- (BOOL)SetPartialDataMSRAction:(enum PartialAction)action;
+- (int)GetPartialDataMSRLength;
+- (BOOL)SetPartialDataMSRLength:(int)length;
+- (int)GetPartialDataMSRStartPosition;
+- (BOOL)SetPartialDataMSRStartPosition:(int)position;
+- (BOOL)EnableDecryptMSRData:(enum EnableDisable)isEnable withKey:(NSString *)key length:(enum AESBitLengths)length;
+
+// Wifi
+- (BOOL)IsWiFiInstalled;
+- (BOOL)EnableWiFiPower:(enum EnableDisable)isEnable;
+- (BOOL)IsWiFiPowerEnabled;
+- (BOOL)EnableWiFiAutoConnect:(enum EnableDisable)isEnable;
+- (BOOL)IsWiFiAutoConnectEnabled;
+- (BOOL)SetWiFiServerIPAddress:(NSString *)ipAddress;
+- (NSString *)GetWiFiServerIPAddress;
+- (BOOL)SetWiFiServerURLAddress:(NSString *)url;
+- (NSString *)GetWiFiServerURLAddress;
+- (BOOL)SetWiFiServerPortNumber:(int)portNumber;
+- (int)GetWiFiServerPortNumber;
+- (BOOL)SetWiFiProtocol:(enum WiFiProtocol)protocol;
+- (enum WiFiProtocol)GetWiFiProtocol;
+- (BOOL)EnableWiFiSSL:(enum EnableDisable)isEnable;
+- (BOOL)IsWiFiSSLEnabled;
+- (BOOL)SetWiFiServerPage:(NSString *)page;
+- (NSString *)GetWiFiServerPage;
+- (BOOL)SetWiFiCertification:(Byte *)data length:(int)length;
+- (NSData *)GetWiFiCertification;
+- (BOOL)SetWiFiApSSID:(NSString *)ssid;
+- (NSString *)GetWiFiApSSID;
+- (BOOL)SetWiFiApPasscode:(NSString *)passcode;
+- (NSString *)GetWiFiApPasscode;
+
+// POS
+- (KPOSData *) GetPOSData;
+
+// Barcode/NFC
+- (int) SoftwareTrigger_POS;
+- (int) EnableNFC_POS;
+- (int) DisableNFC_POS;
+
+// MS/IC Transaction
+- (int) EnableMSR_POS;
+- (int) DisableMSR_POS;
+- (int) EnableCardReader_POS:(short)target;
+- (int) DisableCardReader_POS:(short)target;
+- (int) SelectEMVApplication_POS:(short)aid;
+- (int) InitiateEMVTransaction_POS:(short)pinblockFormat maxDigit:(short)maxDigit transType:(short)transType amount:(int)amount otherAmount:(int)otherAmount additionalOperation:(short)addtionalOperation;
+- (int) SelectApplicationAndInitiateEMVTransaction_POS:(short)pinblockFormat maxDigit:(short)maxDigit aid:(short)aid transType:(short)transType amount:(int)amount otherAmount:(int)otherAmount additionalOperation:(short)addtionalOperation;
+- (int) ReplyEMVTransaction_POS:(KPOSEMVTagList *)tagList;
+- (int) EnterPIN_POS:(NSString *)pan pinblockFormat:(short)pinblockFormat maxDigit:(short)maxDigit timeout:(short)timeout;
+- (int) CancelEnterPIN_POS;
+
+// Configuration
+- (KPOSResult *) GetDeviceStatus_POS;
+- (int) SetBeepSound_POS:(short)keytoneVolume beepVolume:(short)beepVolume beepSoundFlag:(BOOL)beepSoundFlag enableBeepPowerOn:(BOOL)enableBeepPowerOn enableBeepBarcode:(BOOL)enableBeepBarcode enableBeepConnection:(BOOL)enableBeepConnection;
+- (KPOSResult *) GetBeepSound_POS;
+- (int) SetKeypadMenuEntry_POS:(BOOL)enableKeypad;
+- (int) SyncDateTime_POS;
+- (KPOSResult *) GetDateTime_POS;
+- (int) EnableBatteryAlarm_POS:(short)interval level:(short)level;
+- (int) DisableBatteryAlarm_POS;
+
+// Others
+- (int) ReadData_POS:(short)titleID target:(short)target timeout:(short)timeout maxDigit:(short)maxDigit enableMask:(BOOL)enableMask;
+- (int) CancelReadData_POS;
+- (int) FindMyKDC_POS:(short)count;
+- (int) SetDisplayMessage_POS:(NSString *)line1Message line2Message:(NSString *)line2Message line3Message:(NSString *)line3Message line4Message:(NSString *)line4Message timeout:(short)timeout;
+- (int) ClearDisplay_POS;
+- (int) EnableKeypad_POS:(short)line maxDigit:(short)maxDigit clearFlag:(BOOL)clearFlag enableMask:(BOOL)enableMask timeout:(short)timeout;
+- (int) EnableKeypadEventOnly_POS;
+- (int) DisableKeypad_POS:(BOOL)clearFlag;
+
+// Payment Application Generator API
+- (KPOSResult *) GetSupportedLocales_POS;
+- (int) SetDisplayMessage_POS:(NSString *)line1Message line2Message:(NSString *)line2Message line3Message:(NSString *)line3Message line4Message:(NSString *)line4Message locale:(enum KPOSLocale)locale timeout:(short)timeout;
+- (int) SetDisplayMessageAndReadKeypad_POS:(short)line1Id line2Id:(short)line2Id line3Id:(short)line3Id line4Id:(short)line4Id locale:(enum KPOSLocale)locale keypadType:(short)keypadType enableMask:(BOOL)enableMask keyInputLineNumber:(short)keyInputLineNumber keyInputAlign:(enum KPOSAlign)keyInputAlign maxDigit:(short)maxDigit timeout:(short)timeout;
+- (int) SetDisplayMessageAndReadKeypad_POS:(NSString *)line1Message line2Message:(NSString *)line2Message line3Message:(NSString *)line3Message line4Message:(NSString *)line4Message locale:(enum KPOSLocale)locale keypadType:(short)keypadType enableMask:(BOOL)enableMask keyInputLineNumber:(short)keyInputLineNumber keyInputAlign:(enum KPOSAlign)keyInputAlign maxDigit:(short)maxDigit timeout:(short)timeout;
+- (int) SetDisplayMessageAndSelectItem_POS:(NSString *)line1Message line2Message:(NSString *)line2Message line3Message:(NSString *)line3Message locale:(enum KPOSLocale)locale firstItemLineNumber:(short)firstItemLineNumber items:(NSArray*)items timeout:(short)timeout;
+- (int) ClearDisplayAndCancelKeypad_POS;
+
+// SDK Configuration
+- (void) EnablePostNewDeviceArrived:(BOOL)enabled;
 
 @end
 
