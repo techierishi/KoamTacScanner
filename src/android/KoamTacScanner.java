@@ -41,7 +41,6 @@ public class KoamTacScanner extends CordovaPlugin implements
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -118,6 +117,8 @@ public class KoamTacScanner extends CordovaPlugin implements
                 sendResult(PluginResult.Status.OK, buildStatusMessage("CONNECTING"));
                 break;
             case KDCConstants.CONNECTION_STATE_LOST:
+                // start listening for connections again
+                checkAndConnect();
                 sendResult(PluginResult.Status.OK, buildStatusMessage("LOST"));
                 break;
             case KDCConstants.CONNECTION_STATE_FAILED:
@@ -142,6 +143,7 @@ public class KoamTacScanner extends CordovaPlugin implements
     // Build PluginResult and send result
     private void sendResult(PluginResult.Status status, String message) {
         PluginResult pluginResult = new PluginResult(status, message);
+        Log.d(TAG, "Sending Result: "+message);
         sendResult(pluginResult);
     }
 
@@ -161,6 +163,8 @@ public class KoamTacScanner extends CordovaPlugin implements
           _kdcReader.EnableNFCUIDOnly(true);
         }
         if (_kdcReader.IsConnected() ) {
+          _kdcReader.EnableBluetoothAutoConnect(true);
+          _kdcReader.EnableAutoReconnect(true);
           sendResult(PluginResult.Status.OK, buildStatusMessage("success"));
         }
     }
@@ -189,10 +193,10 @@ public class KoamTacScanner extends CordovaPlugin implements
     private void disconnect() {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, buildStatusMessage("DISCONNECTED"));
         if (_kdcReader != null) {
-            _kdcReader.Disconnect();
-            // clean up the kdcReader, we'll create new if necessary
-            _kdcReader = null;
-            _callbackContext.sendPluginResult(pluginResult);
+          _kdcReader.Disconnect();
+          // clean up the kdcReader, we'll create new if necessary
+          _kdcReader = null;
+          _callbackContext.sendPluginResult(pluginResult);
         }
     }
 
@@ -201,13 +205,21 @@ public class KoamTacScanner extends CordovaPlugin implements
         super.onResume(multitasking);
         Log.d(TAG, "onResume");
         checkAndConnect();
+        if (_kdcReader.IsConnected()) {
+          _kdcReader.EnableBluetoothAutoConnect(true);
+          _kdcReader.EnableAutoReconnect(true);
+        }
     }
 
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
         Log.d(TAG, "onPause");
-        // we really don't need to do anything here
+        if (_kdcReader.IsConnected()) {
+          // turn these off so the KDC doesn't lose its mind
+          _kdcReader.EnableBluetoothAutoConnect(false);
+          _kdcReader.EnableAutoReconnect(false);
+        }
     }
 
     /**

@@ -36,6 +36,11 @@
     -->
     <header-file src="src/ios/KoamTac/KDCConstants.h" />
     <header-file src="src/ios/KoamTac/KDCReader.h" />
+    <header-file src="src/ios/KoamTac/KPOSConstants.h" />
+    <header-file src="src/ios/KoamTac/KPOSData.h" />
+    <header-file src="src/ios/KoamTac/KPOSEMVApplication.h" />
+    <header-file src="src/ios/KoamTac/KPOSEMVTagList.h" />
+    <header-file src="src/ios/KoamTac/KPOSResult.h" />
 
     <source-file src="src/ios/KoamTac/libKDCReader.a" framework="true" />
 

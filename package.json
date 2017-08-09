@@ -1,0 +1,19 @@
+{
+  "name": "koamtacscanner",
+  "version": "1.0.0",
+  "description": "KoamTacScanner for DataSplice Cordova App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DataSplice/KoamTacScanner.git"
+  },
+  "author": "DataSplice LLC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DataSplice/KoamTacScanner/issues"
+  },
+  "homepage": "https://github.com/DataSplice/KoamTacScanner#readme"
+}

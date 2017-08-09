@@ -90,6 +90,8 @@
  */
 -(void) onDidBecomeActive :(UIApplication*) application
 {
+    // Connection gets broken if app enters background.  Reconnect on resume.
+    [kdcReader Disconnect];
     [kdcReader Connect];
 }
 
@@ -254,7 +256,12 @@
  */
 - (void) updateConnectionStatus
 {
-    NSString* status = [self.kdcReader IsKDCConnected] ? @"CONNECTED" : @"DISCONNECTED";
+    NSString* status = [self.kdcReader IsConnected] ? @"CONNECTED" : @"DISCONNECTED";
+
+    if([self.kdcReader IsConnected]) {
+      [self.kdcReader EnableBluetoothAutoConnect:ENABLE];
+      [self.kdcReader EnableAutoReconnect:ENABLE];
+    }
 
     NSString* message = [NSString stringWithFormat:  @"{\"status\": \"%@\"}", status];
 
